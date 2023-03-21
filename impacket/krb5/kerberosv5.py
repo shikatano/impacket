@@ -133,7 +133,7 @@ def getKerberosTGT(clientName, password, domain, lmhash, nthash, aesKey='', kdcH
     opts = list()
     opts.append( constants.KDCOptions.forwardable.value )
     opts.append( constants.KDCOptions.renewable.value )
-    opts.append( constants.KDCOptions.proxiable.value )
+    opts.append( constants.KDCOptions.renewable_ok.value )
     reqBody['kdc-options']  = constants.encodeFlags(opts)
 
     seq_set(reqBody, 'sname', serverName.components_to_asn1)
@@ -144,7 +144,8 @@ def getKerberosTGT(clientName, password, domain, lmhash, nthash, aesKey='', kdcH
 
     reqBody['realm'] = domain
 
-    now = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+    tz = datetime.timezone(datetime.timedelta(hours=-5))
+    now = datetime.datetime(2037, 9, 13, 2, 48, 5, 0, tz)
     reqBody['till'] = KerberosTime.to_asn1(now)
     reqBody['rtime'] = KerberosTime.to_asn1(now)
     reqBody['nonce'] =  rand.getrandbits(31)
@@ -293,7 +294,7 @@ def getKerberosTGT(clientName, password, domain, lmhash, nthash, aesKey='', kdcH
         opts = list()
         opts.append( constants.KDCOptions.forwardable.value )
         opts.append( constants.KDCOptions.renewable.value )
-        opts.append( constants.KDCOptions.proxiable.value )
+        opts.append( constants.KDCOptions.renewable_ok.value )
         reqBody['kdc-options'] = constants.encodeFlags(opts)
 
         seq_set(reqBody, 'sname', serverName.components_to_asn1)
@@ -301,7 +302,8 @@ def getKerberosTGT(clientName, password, domain, lmhash, nthash, aesKey='', kdcH
 
         reqBody['realm'] =  domain
 
-        now = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        tz = datetime.timezone(datetime.timedelta(hours=-5))
+        now = datetime.datetime(2037, 9, 13, 2, 48, 5, 0, tz)
         reqBody['till'] = KerberosTime.to_asn1(now)
         reqBody['rtime'] =  KerberosTime.to_asn1(now)
         reqBody['nonce'] = rand.getrandbits(31)
